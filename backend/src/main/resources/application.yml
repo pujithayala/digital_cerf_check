@@ -1,0 +1,44 @@
+server:
+  port: ${PORT:8090}
+
+spring:
+  application:
+    name: certiverify-backend
+
+  datasource:
+    # Uses PostgreSQL if DB_URL is set, otherwise seamlessly uses local PostgreSQL-compatible H2
+    url: ${SPRING_DATASOURCE_URL:${DB_URL:jdbc:h2:file:./data/certiverify_db;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:sa}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:${DB_DRIVER:org.h2.Driver}}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+# Security & JWT configuration
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000 # 24 hours
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  storage:
+    type: ${STORAGE_TYPE:local} # "local" or "s3"
+    local-dir: ./uploads
+
+# AWS S3 Cloud Configuration (enabled when aws credentials & bucket are provided)
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET:}
+    region: ${AWS_REGION:us-east-1}
+  access-key: ${AWS_ACCESS_KEY_ID:}
+  secret-key: ${AWS_SECRET_ACCESS_KEY:}
